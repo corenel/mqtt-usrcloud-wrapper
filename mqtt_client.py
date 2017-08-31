@@ -1,6 +1,7 @@
 """Wrapper class for Mqtt communication with UsrCloud."""
 
 from __future__ import print_function
+
 import paho.mqtt.client as mqtt
 
 
@@ -83,7 +84,7 @@ class MqttClient(object):
     def subscribe(self, dev_id):
         """Subscribe to topic on UsrCloud."""
         topic = "$USR/DevTx/{}".format(dev_id)
-        self.client.subscribe(topic, 2)
+        self.client.subscribe(topic, 0)
 
     def unsubscribe(self, dev_id):
         """Unsubscribe to topic on UsrCloud."""
@@ -96,7 +97,7 @@ class MqttClient(object):
         msg_byte = bytearray()
         msg_byte.extend(map(ord, msg))
         print(msg_byte)
-        self.client.publish(topic, msg_byte, qos=2)
+        self.client.publish(topic, msg_byte, qos=1)
 
     def loop_forever(self):
         """Loop client forever."""
@@ -105,9 +106,9 @@ class MqttClient(object):
 
 if __name__ == '__main__':
     # Please replace username, password and device id as yours
-    client = MqttClient(username="sdktest",
-                        password="41e2aff7c54dee2631212d6e5c2f8237")
+    client = MqttClient()
     client.connect()
-    client.subscribe("00008142000000000002")
+    client.subscribe("00007867000000000001")
+    client.publish("00007867000000000001", b"\x01\x03\x00\x63\x00\x03\xf5\xd5")
 
     client.loop_forever()
